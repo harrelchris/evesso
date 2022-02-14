@@ -102,7 +102,7 @@ class Esi:
         # jwt.json exists, so app is authorized. Use stored jwt if not expired, else refresh
         else:
             jwt = load_jwt(self.jwt_file_path)
-            if jwt.get('expires_at') < time.time():
+            if jwt.get('expires_at') - 30 < time.time():
                 refresh_token = jwt.get('refresh_token')
                 new_jwt = get_refresh_jwt(self.client_id, self.scope, refresh_token)
                 dump_jwt(self.jwt_file_path, new_jwt)
