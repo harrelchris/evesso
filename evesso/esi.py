@@ -51,9 +51,10 @@ class Esi:
         self.jwt = None
 
     def get_auth_header(self):
-        """
+        """Get the JWT from the appropriate location and extract the access_token to use in the header.
+        This method must be executed upon every use of the header to ensure the header is valid when used
 
-        :return:
+        :return: dict Header dict containing authorization header
         """
         jwt = self.get_jwt()
         access_token = jwt.get('access_token')
@@ -64,19 +65,28 @@ class Esi:
 
     @property
     def header(self):
+        """Update the auth header to accept compression.
+
+        TODO add user agent string as well
+
+        :return: dict Header dict containing authorization and compression headers
         """
 
-        :return:
-        """
         header = self.get_auth_header()
         header.update({'Accept-Encoding': 'gzip'})
         return header
 
     def get_jwt(self):
+        """Retrieve the JWT from one of three locations, in order of latency:
+            1. Current Esi object. JWT will exist on the object after authorization or first retrieval from file system
+                This is the common case, so make it fast.
+            2. The file system. The JWT will exist on the file system if the app has already been authorized.
+                It may be expired though, so refresh it if needed, but store it on the object either way.
+            3. The SSO server. The app has not yet been authorized and no JWT exists on the file system, so get one.
+
+        :return: dict JWT received from authorization server containing access token and refresh token
         """
 
-        :return:
-        """
         # Check jwt stored on object first, and ensure at least 30 seconds left before it expires
         if self.jwt and self.jwt.get('expires_at') - 30 > time.time():
             # Current JWT is still valid. Use it.
