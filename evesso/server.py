@@ -16,7 +16,13 @@ class Server(socketserver.TCPServer):
         self.path = None
         super().__init__(*args, **kwargs)
 
-    def set_path(self, path) -> None:
+    def set_path(self, path: str) -> None:
+        """Store the requested path on the server instance for later retrieval
+
+        :param path: str the URL path that was request byt he auth server
+        :return: None
+        """
+
         self.path = path
 
 
@@ -25,11 +31,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
     Returns a simple generic json response."""
 
     def _set_response(self) -> None:
+        """Set the response that will be sent to the request sender"""
+
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
     def do_GET(self) -> None:
+        """Respond to a GET request.
+        Store the requested path on the server instance.
+        Send a 200 status response with a simple JSON object.
+        """
+
         self.server.set_path(self.path)
         self.send_response(200, "OK")
         self.end_headers()
