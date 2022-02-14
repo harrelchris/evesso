@@ -48,6 +48,8 @@ class Esi:
         if not self.callback_url:
             raise ValueError('CALLBACK_URL is required but not provided')
 
+        self.jwt = None
+
     def get_auth_header(self):
         """
 
@@ -75,9 +77,14 @@ class Esi:
 
         :return:
         """
+        # Check jwt stored on object first, and ensure at least 30 seconds left before it expires
+        if self.jwt and self.jwt.get('expires_at') - 30 > time.time():
+            # Current JWT is still valid. Use it.
+            return self.jwt
         if not os.path.exists(self.jwt_file_path):
             jwt = get_auth_jwt(self.client_id, self.scope, self.callback_url)
             dump_jwt(self.jwt_file_path, jwt)
+            self.jwt = jwt
             return jwt
         else:
             jwt = load_jwt(self.jwt_file_path)
@@ -85,6 +92,8 @@ class Esi:
                 refresh_token = jwt.get('refresh_token')
                 new_jwt = get_refresh_jwt(self.client_id, self.scope, refresh_token)
                 dump_jwt(self.jwt_file_path, new_jwt)
+                self.jwt = new_jwt
                 return new_jwt
             else:
+                self.jwt = jwt
                 return jwt
