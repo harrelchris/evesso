@@ -23,7 +23,7 @@ response = requests.get(
     headers=esi.headers
 )
 response.raise_for_status()
-database.store(response.json()
+database.store(response.json())
 ```
 
 ### .env File
