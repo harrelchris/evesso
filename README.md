@@ -1,6 +1,6 @@
 # EveSSO
 
-SSO Authorization for Eve Online
+SSO Authorization for Eve Online. EveSSO will perform the authorization process as needed, store your access and refresh tokens, and refresh your access token as needed. It will then provide the required header for your requests.
 
 ## Installation
 
@@ -31,5 +31,5 @@ database.store(response.json()
 ```
 CLIENT_ID = 1234567890asdfghjklqwertyuiop
 CALLBACK_URL = http://localhost/
-SCOPE = esi-characters.read_corporation_roles.v1
+SCOPE = esi-characters.some_scope.v1 esi-characters.some_scope.v1
 ```
