@@ -1,22 +1,32 @@
-# EVESSO
+# EveSSO
 
-SSO Authorization library for requesting protected ESI routes for the Eve Online API
+SSO Authorization for Eve Online
+
+## Installation
+
+```
+pip install evesso
+```
 
 ## Quickstart
 
 ```
+from evesso import Esi
 from dotenv import load_dotenv
-from evesso import ESI
+import requests
 
 load_dotenv()
 
-
-esi = ESI()
-data = esi.get('/characters/12345678/roles/')
-print(data)
+esi = Esi()
+response = requests.get(
+    'https://esi.evetech.net/latest/markets/structures/SOME_STRUCTURE_ID/?datasource=tranquility',
+    headers=esi.headers
+)
+response.raise_for_status()
+database.store(response.json()
 ```
 
-Store app settings in `.env` file:
+### .env File
 
 ```
 CLIENT_ID = 1234567890asdfghjklqwertyuiop
