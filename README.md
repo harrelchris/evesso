@@ -20,7 +20,7 @@ load_dotenv()
 esi = Esi()
 response = requests.get(
     'https://esi.evetech.net/latest/markets/structures/SOME_STRUCTURE_ID/?datasource=tranquility',
-    headers=esi.headers
+    headers=esi.header
 )
 response.raise_for_status()
 database.store(response.json())
