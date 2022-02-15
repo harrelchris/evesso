@@ -80,7 +80,7 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     webbrowser.open(auth_url)
     query_string = get_callback_data()
     code = query_string.get('code')
-    state = query_string.get('state')
+    state = query_string.get('state')[0]
 
     if not state == STATE:
         raise ValueError('Did not receive expected state')
