@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 import requests
 
 from .config import AUTH_URL, TOKEN_URL, HEADERS, STATE
-from .server import get_callback_data
+from .callback import listen_for_callback
 
 
 def generate_byte_string(length: int = 32) -> bytes:
@@ -78,7 +78,7 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     code_verifier = generate_byte_string()
     auth_url = build_auth_url(client_id, scope, callback_url, code_verifier)
     webbrowser.open(auth_url)
-    query_string = get_callback_data()
+    callback = listen_for_callback()
     code = query_string.get('code')
     state = query_string.get('state')[0]
 
