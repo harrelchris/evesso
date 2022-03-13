@@ -1,6 +1,6 @@
 import requests
 
-from .config import HEADERS, TOKEN_URL
+from .const import HEADERS, TOKEN_URL
 
 
 def get_refresh_jwt(client_id: str, scope: str, refresh_token: str) -> dict:
@@ -20,8 +20,4 @@ def get_refresh_jwt(client_id: str, scope: str, refresh_token: str) -> dict:
     }
     response = requests.post(TOKEN_URL, data=data, headers=HEADERS)
     response.raise_for_status()
-    if response.json().get('access_token'):
-        return response.json()
-    else:
-        print(response.json())
-        raise RuntimeError('JWT request failed')
+    return response.json()

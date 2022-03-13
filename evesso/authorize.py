@@ -2,26 +2,28 @@ import base64
 import hashlib
 import secrets
 import webbrowser
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qs
 
 import requests
 
-from .config import AUTH_URL, TOKEN_URL, HEADERS, STATE
-from .server import get_callback_data
+from .const import AUTH_URL, TOKEN_URL, HEADERS
+from .callback import listen_for_callback
+
+STATE = secrets.token_urlsafe(32)
 
 
-def generate_byte_string(nbytes: int = 32) -> bytes:
+def generate_byte_string(length: int = 32) -> bytes:
     """Create a base64-encoded random byte string containing *nbytes* bytes
 
     Example output:
 
         b'RQWLR1FETAc7aKTyY11TUloY4ZMN9NCMbalu136UaJ0='
 
-    :param nbytes: int length in bytes
+    :param length: int length in bytes
     :return: bytes random byte string
     """
 
-    return base64.urlsafe_b64encode(secrets.token_bytes(nbytes))
+    return base64.urlsafe_b64encode(secrets.token_bytes(length))
 
 
 def generate_challenge(verifier: bytes) -> str:
@@ -64,6 +66,21 @@ def build_auth_url(client_id: str, scope, callback_url: str, code_verifier: byte
     return f'{AUTH_URL}?{urlencode(query_string)}'
 
 
+def parse_callback_url(callback_url: str) -> dict:
+    """Extract the requested url path and parse it.
+    Return the parsed query string as a dict with the
+    structure of `{str: list}`.
+
+    Example output:
+        {'code': ['abdcefghijklmnopqrstuvwxyz0123456789'], 'state': ['secret']}
+
+    :return: dict query string parameters from the callback
+    """
+
+    parsed_path = urlparse(callback_url)
+    return parse_qs(parsed_path.query)
+
+
 def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     """Open browser to auth URL for user to authorize the app.
     Receive the callback and parse the code and state values.
@@ -78,7 +95,8 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     code_verifier = generate_byte_string()
     auth_url = build_auth_url(client_id, scope, callback_url, code_verifier)
     webbrowser.open(auth_url)
-    query_string = get_callback_data()
+    callback = listen_for_callback()
+    query_string = parse_callback_url(callback)
     code = query_string.get('code')
     state = query_string.get('state')[0]
 
@@ -94,9 +112,4 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     response = requests.post(TOKEN_URL, data=data, headers=HEADERS)
     response.raise_for_status()
     jwt = response.json()
-
-    if jwt.get('access_token'):
-        return jwt
-    else:
-        print(jwt)
-        raise RuntimeError('JWT request failed')
+    return jwt
