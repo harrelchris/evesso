@@ -6,8 +6,10 @@ from urllib.parse import urlencode, urlparse, parse_qs
 
 import requests
 
-from .config import AUTH_URL, TOKEN_URL, HEADERS, STATE
+from .config import AUTH_URL, TOKEN_URL, HEADERS
 from .callback import listen_for_callback
+
+STATE = secrets.token_urlsafe(32)
 
 
 def generate_byte_string(length: int = 32) -> bytes:
