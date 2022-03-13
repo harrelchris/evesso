@@ -64,7 +64,8 @@ class SSO:
         }
         return header
 
-    def append_jwt_expiry(self, jwt: dict) -> dict:
+    @staticmethod
+    def append_jwt_expiry(jwt: dict) -> dict:
         """Add expiration time to jwt
 
         :param jwt: dict JWT
