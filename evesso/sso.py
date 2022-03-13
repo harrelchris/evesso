@@ -7,7 +7,7 @@ from .files import dump_jwt, load_jwt
 from . import config
 
 
-class Esi:
+class SSO:
     def __init__(self, client_id: str = None, scope: str = None, callback_url: str = None, jwt_file_path: str = None):
         """The Esi object implements a controller for managing authorization
         for the Eve Online ESI API. The primary interaction a user has is the
