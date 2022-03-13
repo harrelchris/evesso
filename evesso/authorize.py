@@ -94,9 +94,4 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     response = requests.post(TOKEN_URL, data=data, headers=HEADERS)
     response.raise_for_status()
     jwt = response.json()
-
-    if jwt.get('access_token'):
-        return jwt
-    else:
-        print(jwt)
-        raise RuntimeError('JWT request failed')
+    return jwt
