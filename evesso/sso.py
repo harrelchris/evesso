@@ -4,7 +4,7 @@ import time
 from .authorize import get_auth_jwt
 from .refresh import get_refresh_jwt
 from .cache import Cache
-from . import config
+from . import const
 
 
 class SSO:
@@ -38,8 +38,8 @@ class SSO:
 
         self.client_id = client_id or os.getenv('CLIENT_ID')
         self.scope = scope or os.getenv('SCOPE')
-        self.callback_url = callback_url or os.getenv('CALLBACK_URL') or config.DEFAULT_CALLBACK_URL
-        self.jwt_file_path = jwt_file_path or os.getenv('JWT_FILE_PATH') or config.DEFAULT_JWT_PATH
+        self.callback_url = callback_url or os.getenv('CALLBACK_URL') or const.DEFAULT_CALLBACK_URL
+        self.jwt_file_path = jwt_file_path or os.getenv('JWT_FILE_PATH') or const.DEFAULT_JWT_PATH
         self.cache = Cache(self.jwt_file_path)
 
         if not self.client_id:

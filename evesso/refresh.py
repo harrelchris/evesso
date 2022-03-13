@@ -1,6 +1,6 @@
 import requests
 
-from .config import HEADERS, TOKEN_URL
+from .const import HEADERS, TOKEN_URL
 
 
 def get_refresh_jwt(client_id: str, scope: str, refresh_token: str) -> dict:
