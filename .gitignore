@@ -5,3 +5,4 @@ jwt.json
 dist/
 *.egg-info/
 .pypirc
+.pytest_cache

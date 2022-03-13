@@ -97,7 +97,7 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     webbrowser.open(auth_url)
     callback = listen_for_callback()
     query_string = parse_callback_url(callback)
-    code = query_string.get('code')
+    code = query_string.get('code')[0]
     state = query_string.get('state')[0]
 
     if not state == STATE:
