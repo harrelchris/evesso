@@ -8,7 +8,7 @@ from . import const
 
 
 class SSO:
-    def __init__(self, client_id: str = None, scope: str = None, callback_url: str = None, jwt_file_path: str = None):
+    def __init__(self, client_id: str = None, scope: str = None, callback_url: str = None, jwt_file_path: str = None, cli: bool = False):
         """The Esi object implements a controller for managing authorization
         for the Eve Online ESI API. The primary interaction a user has is the
         `header` property function. This function return an authorization header
@@ -34,6 +34,7 @@ class SSO:
         :param scope: str a space-delimited string of scopes, found at https://developers.eveonline.com/applications
         :param callback_url: str path to accept callback from auth server, found at https://developers.eveonline.com/applications. Default and recommended value is https://localhost/callback/
         :param jwt_file_path: str path at which the jwt will be stored
+        :param cli: bool use command line interface for authorization
         """
 
         self.client_id = client_id or os.getenv('CLIENT_ID')
@@ -41,6 +42,7 @@ class SSO:
         self.callback_url = callback_url or os.getenv('CALLBACK_URL') or const.DEFAULT_CALLBACK_URL
         self.jwt_file_path = jwt_file_path or os.getenv('JWT_FILE_PATH') or const.DEFAULT_JWT_PATH
         self.cache = Cache(self.jwt_file_path)
+        self.cli = cli
 
         if not self.client_id:
             raise ValueError('CLIENT_ID is required but not provided')
@@ -93,7 +95,7 @@ class SSO:
 
         # Check if the jwt.json file exists. If not, authorize
         if not os.path.exists(self.jwt_file_path):
-            jwt = get_auth_jwt(self.client_id, self.scope, self.callback_url)
+            jwt = get_auth_jwt(self.client_id, self.scope, self.callback_url, self.cli)
             jwt = self.append_jwt_expiry(jwt)
             self.cache.dump(jwt)
             self.jwt = jwt
