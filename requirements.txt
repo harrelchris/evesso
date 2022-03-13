@@ -1,3 +1,5 @@
+atomicwrites==1.4.0
+attrs==21.4.0
 bleach==4.1.0
 build==0.7.0
 certifi==2021.10.8
@@ -6,12 +8,17 @@ colorama==0.4.4
 docutils==0.18.1
 idna==3.3
 importlib-metadata==4.11.0
+iniconfig==1.1.1
 keyring==23.5.0
 packaging==21.3
 pep517==0.12.0
 pkginfo==1.8.2
+pluggy==1.0.0
+py==1.11.0
 Pygments==2.11.2
 pyparsing==3.0.7
+pytest==7.0.1
+python-dotenv==0.19.2
 pywin32-ctypes==0.2.0
 readme-renderer==32.0
 requests==2.27.1
