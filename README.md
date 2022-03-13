@@ -57,6 +57,17 @@ response.raise_for_status()
 print(response.json())
 ```
 
-## Running on a remote machine
+## Authorizing on a remote machine
 
-If you want to run your program on a remote server, first run it on a local machine with a web browser to create the `jwt.json` file. Then move the `jwt.json` to your project directory on the remote server. You will need to complete the authorization process with a web browser to get the initial token.
+1. Set the `cli` parameter to `True`.
+2. The auth url will be printed to the command line.
+3. Open the auth url in a browser and complete the auth process
+4. The SSO server will make a get request to the machine where you opened the auth url
+5. Copy the callback url and paste it into the command line so evesso can parse it
+
+```
+from evesso import SSO
+
+sso = SSO(cli=True)
+...
+```
