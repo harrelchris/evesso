@@ -3,7 +3,7 @@ import time
 
 from .authorize import get_auth_jwt
 from .refresh import get_refresh_jwt
-from .files import dump_jwt, load_jwt
+from .cache import Cache
 from . import config
 
 
@@ -40,6 +40,7 @@ class SSO:
         self.scope = scope or os.getenv('SCOPE')
         self.callback_url = callback_url or os.getenv('CALLBACK_URL') or config.DEFAULT_CALLBACK_URL
         self.jwt_file_path = jwt_file_path or os.getenv('JWT_FILE_PATH') or config.DEFAULT_JWT_PATH
+        self.cache = Cache(self.jwt_file_path)
 
         if not self.client_id:
             raise ValueError('CLIENT_ID is required but not provided')
@@ -63,6 +64,16 @@ class SSO:
         }
         return header
 
+    def append_jwt_expiry(self, jwt: dict) -> dict:
+        """Add expiration time to jwt
+
+        :param jwt: dict JWT
+        :return: dict JWT
+        """
+
+        jwt['expires_at'] = int(time.time()) + jwt.get('expires_in', 1199)
+        return jwt
+
     def get_jwt(self):
         """Retrieve the JWT from one of three locations, in order of latency:
             1. Current Esi object. JWT will exist on the object after authorization or first retrieval from file system
@@ -82,17 +93,19 @@ class SSO:
         # Check if the jwt.json file exists. If not, authorize
         if not os.path.exists(self.jwt_file_path):
             jwt = get_auth_jwt(self.client_id, self.scope, self.callback_url)
-            dump_jwt(self.jwt_file_path, jwt)
+            jwt = self.append_jwt_expiry(jwt)
+            self.cache.dump(jwt)
             self.jwt = jwt
             return jwt
 
         # jwt.json exists, so app is authorized. Use stored jwt if not expired, else refresh
         else:
-            jwt = load_jwt(self.jwt_file_path)
+            jwt = self.cache.load()
             if jwt.get('expires_at') - 30 < time.time():
                 refresh_token = jwt.get('refresh_token')
                 new_jwt = get_refresh_jwt(self.client_id, self.scope, refresh_token)
-                dump_jwt(self.jwt_file_path, new_jwt)
+                new_jwt = self.append_jwt_expiry(new_jwt)
+                self.cache.dump(new_jwt)
                 self.jwt = new_jwt
                 return new_jwt
             else:
