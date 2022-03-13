@@ -2,7 +2,7 @@ import base64
 import hashlib
 import secrets
 import webbrowser
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qs
 
 import requests
 
@@ -64,6 +64,21 @@ def build_auth_url(client_id: str, scope, callback_url: str, code_verifier: byte
     return f'{AUTH_URL}?{urlencode(query_string)}'
 
 
+def parse_callback_url(callback_url: str) -> dict:
+    """Extract the requested url path and parse it.
+    Return the parsed query string as a dict with the
+    structure of `{str: list}`.
+
+    Example output:
+        {'code': ['abdcefghijklmnopqrstuvwxyz0123456789'], 'state': ['secret']}
+
+    :return: dict query string parameters from the callback
+    """
+
+    parsed_path = urlparse(callback_url)
+    return parse_qs(parsed_path.query)
+
+
 def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     """Open browser to auth URL for user to authorize the app.
     Receive the callback and parse the code and state values.
@@ -79,6 +94,7 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     auth_url = build_auth_url(client_id, scope, callback_url, code_verifier)
     webbrowser.open(auth_url)
     callback = listen_for_callback()
+    query_string = parse_callback_url(callback)
     code = query_string.get('code')
     state = query_string.get('state')[0]
 
