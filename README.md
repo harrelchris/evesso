@@ -15,17 +15,17 @@ pip install evesso
 ## Quickstart
 
 ```
-from evesso import Esi
+from evesso import SSO
 import requests
 
-esi = Esi(
+sso = SSO(
     client_id='1234567890asdfghjklqwertyuiop',
     callback_url='http://localhost/',
     scope='esi-characters.some_scope.v1 esi-characters.some_scope.v1'
 )
 response = requests.get(
     'https://esi.evetech.net/latest/markets/structures/SOME_STRUCTURE_ID/?datasource=tranquility',
-    headers=esi.header
+    headers=sso.get_header()
 )
 response.raise_for_status()
 print(response.json())
@@ -42,16 +42,16 @@ SCOPE = esi-characters.some_scope.v1 esi-characters.some_scope.v1
 Esi will check environment variables for credentials if not parameterized.
 
 ```
-from evesso import Esi
+from evesso import SSO
 from dotenv import load_dotenv
 import requests
 
 load_dotenv()
 
-esi = Esi()
+sso = SSO()
 response = requests.get(
     'https://esi.evetech.net/latest/markets/structures/SOME_STRUCTURE_ID/?datasource=tranquility',
-    headers=esi.header
+    headers=sso.get_header()
 )
 response.raise_for_status()
 print(response.json())
