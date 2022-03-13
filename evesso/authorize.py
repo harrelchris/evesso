@@ -10,18 +10,18 @@ from .config import AUTH_URL, TOKEN_URL, HEADERS, STATE
 from .server import get_callback_data
 
 
-def generate_byte_string(nbytes: int = 32) -> bytes:
+def generate_byte_string(length: int = 32) -> bytes:
     """Create a base64-encoded random byte string containing *nbytes* bytes
 
     Example output:
 
         b'RQWLR1FETAc7aKTyY11TUloY4ZMN9NCMbalu136UaJ0='
 
-    :param nbytes: int length in bytes
+    :param length: int length in bytes
     :return: bytes random byte string
     """
 
-    return base64.urlsafe_b64encode(secrets.token_bytes(nbytes))
+    return base64.urlsafe_b64encode(secrets.token_bytes(length))
 
 
 def generate_challenge(verifier: bytes) -> str:
