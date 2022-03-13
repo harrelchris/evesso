@@ -50,7 +50,7 @@ class SSO:
 
         self.jwt = None
 
-    def get_auth_header(self):
+    def get_header(self):
         """Get the JWT from the appropriate location and extract the access_token to use in the header.
         This method must be executed upon every use of the header to ensure the header is valid when used
 
@@ -61,19 +61,6 @@ class SSO:
         header = {
             'Authorization': f'Bearer {access_token}',
         }
-        return header
-
-    @property
-    def header(self):
-        """Update the auth header to accept compression.
-
-        TODO add user agent string as well
-
-        :return: dict Header dict containing authorization and compression headers
-        """
-
-        header = self.get_auth_header()
-        header.update({'Accept-Encoding': 'gzip'})
         return header
 
     def get_jwt(self):
