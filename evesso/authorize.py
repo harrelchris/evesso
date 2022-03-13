@@ -81,7 +81,7 @@ def parse_callback_url(callback_url: str) -> dict:
     return parse_qs(parsed_path.query)
 
 
-def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
+def get_auth_jwt(client_id: str, scope: str, callback_url: str, cli: bool) -> dict:
     """Open browser to auth URL for user to authorize the app.
     Receive the callback and parse the code and state values.
     Use the received code value to send request for access token.
@@ -90,12 +90,17 @@ def get_auth_jwt(client_id: str, scope: str, callback_url: str) -> dict:
     :param scope: str a space-delimited string of scopes, found at https://developers.eveonline.com/applications
     :param callback_url: str path to accept callback from auth server, found at https://developers.eveonline.com/applications. Default and recommended value is https://localhost/callback/
     :return: dict JWT received from authorization server containing access token and refresh token
+    :param cli: bool use command line interface for authorization
     """
 
     code_verifier = generate_byte_string()
     auth_url = build_auth_url(client_id, scope, callback_url, code_verifier)
-    webbrowser.open(auth_url)
-    callback = listen_for_callback()
+    if cli:
+        print(f'Open this url in a web browser:\n\n{auth_url}\n\n')
+        callback = input('Copy the callback URL from your web browser and paste it here, then press enter:\n')
+    else:
+        webbrowser.open(auth_url)
+        callback = listen_for_callback()
     query_string = parse_callback_url(callback)
     code = query_string.get('code')[0]
     state = query_string.get('state')[0]
