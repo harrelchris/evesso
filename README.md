@@ -8,13 +8,13 @@ This library implements the native SSO authorization flow as described [here](ht
 
 ## Installation
 
-```
+```shell
 pip install evesso
 ```
 
 ## Quickstart
 
-```
+```python
 from evesso import SSO
 import requests
 
@@ -33,7 +33,7 @@ print(response.json())
 
 ### Using .env file
 
-```
+```dotenv
 CLIENT_ID = 1234567890asdfghjklqwertyuiop
 CALLBACK_URL = http://localhost/
 SCOPE = esi-characters.some_scope.v1 esi-characters.some_scope.v1
@@ -41,7 +41,7 @@ SCOPE = esi-characters.some_scope.v1 esi-characters.some_scope.v1
 
 Esi will check environment variables for credentials if not parameterized.
 
-```
+```python
 from evesso import SSO
 from dotenv import load_dotenv
 import requests
@@ -65,7 +65,7 @@ print(response.json())
 4. The SSO server will make a get request to the machine where you opened the auth url
 5. Copy the callback url and paste it into the command line so evesso can parse it
 
-```
+```python
 from evesso import SSO
 
 sso = SSO(cli=True)
