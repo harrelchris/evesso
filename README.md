@@ -34,9 +34,9 @@ print(response.json())
 ### Using .env file
 
 ```dotenv
-CLIENT_ID = 1234567890asdfghjklqwertyuiop
-CALLBACK_URL = http://localhost/
-SCOPE = esi-characters.some_scope.v1 esi-characters.some_scope.v1
+CLIENT_ID=1234567890asdfghjklqwertyuiop
+CALLBACK_URL=http://localhost/
+SCOPE="esi-characters.some_scope.v1 esi-characters.some_scope.v1"
 ```
 
 Esi will check environment variables for credentials if not parameterized.
