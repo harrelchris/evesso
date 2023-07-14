@@ -1,8 +1,10 @@
-__pycache__/
 .idea/
-.env
-jwt.json
+.venv/
+__pycache__/
 dist/
 *.egg-info/
+
+.env
 .pypirc
 .pytest_cache
+jwt.json
